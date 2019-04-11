@@ -2,13 +2,31 @@ const express = require("express")
 const app = new express()
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser')
-const sequelize = require("./config/database")
+const session = require("express-session")
+const flash = require("connect-flash")
+//const sequelize = require("./config/database")
 //setup body parser
 
 app.use(bodyParser.urlencoded({
     extended: false
 }))
 app.use(bodyParser.json())
+
+// configure flash 
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+}))
+
+
+app.use(flash());
+// add middlware for flash messages
+app.use((req, res, next) => {
+    res.locals.successMessage = req.flash('successMessage')
+    res.locals.errorMessage = req.flash('errorMessage')
+    next()
+})
 
 //routes
 app.use('/', require('./routes/index.js'))
@@ -19,11 +37,7 @@ app.use('/users', require('./routes/users.js'))
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
 }));
-
-
 app.set('view engine', 'handlebars');
-
-// connect to mysql databse
 
 
 // listern to the port

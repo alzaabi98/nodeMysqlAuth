@@ -63,7 +63,9 @@ router.post('/register', (req, res) => {
                     errors.push({
                         msg: 'user was found'
                     })
-                    res.render('register', errors)
+                    res.render('register', {
+                        errors
+                    })
                 } else {
                     //create user
 
@@ -81,10 +83,12 @@ router.post('/register', (req, res) => {
                             newUser.save()
                                 .then((user) => {
                                     console.log('user saved')
+                                    req.flash('successMessage', 'You are regitsred , Please login')
                                     res.redirect('/users/login')
                                 })
                                 .catch(err => {
                                     console.log(err)
+                                    req.flash('ErrorMessage', 'There an error , please try again')
                                     res.redirect('/users/register')
                                 })
                         })
