@@ -4,6 +4,9 @@ const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser')
 const session = require("express-session")
 const flash = require("connect-flash")
+const passport = require('passport')
+
+
 //const sequelize = require("./config/database")
 //setup body parser
 
@@ -19,8 +22,12 @@ app.use(session({
     saveUninitialized: true,
 }))
 
-
+require('./config/passport')
+// add passport 
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
+
 // add middlware for flash messages
 app.use((req, res, next) => {
     res.locals.successMessage = req.flash('successMessage')
